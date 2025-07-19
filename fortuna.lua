@@ -1,25 +1,23 @@
 math.randomseed(os.time())
 
 --implementando orientação a objetos em Lua
-board = {}
-board.__index = board
+Board = { coins = { nil, nil, nil, nil, nil } }
 
 --método para a contrução de novas mesas
-function board:create()
-	local object = {} --nova instância do objeto
-	setmetatable(object, self) -- board como metatabela de object
-
-	object.coins = { nil, nil, nil, nil, nil }
-	return object
+function Board:new(o)
+	o = o or {} --nova instância do objeto
+	setmetatable(o, self) -- Board como metatabela de object
+	self.__index = self
+	return o
 end
 
-function board:show()
+function Board:show()
 	print(table.concat(self.coins, "  "))
 end
 
--- Criar o board:dice que gera sequencialmente o ante-flop, flop, turn
+-- Criar o Board:dice que gera sequencialmente o ante-flop, flop, turn
 -- e river
-function board:dice()
+function Board:dice()
 	if self.coins[1] == nil or self.coins[2] == nil then
 		self.coins[1] = self.coins[1] or math.random(2)
 		self.coins[2] = self.coins[2] or math.random(2)
@@ -42,24 +40,20 @@ function board:dice()
 	end
 end
 
-player = {}
-player.__index = player
+Player = { coins = { nil, nil, nil, nil, nil }, name = nil, cash = 1000 }
 
-function player:create(name, cash)
-	local object = {}
-	setmetatable(object, self)
-
-	object.coins = { nil, nil, nil, nil, nil }
-	object.name = name or nil
-	object.cash = cash or 1000
-	return object
+function Player:new(o)
+	o = o or {}
+	setmetatable(o, self)
+	self.__index = self
+	return o
 end
 
-function player:hand(hand)
+function Player:hand(hand)
 	self.coins = hand
 end
 
-mesa = board:create()
+mesa = Board:new()
 for i = 1, 4 do
 	mesa:dice()
 	mesa:show()
