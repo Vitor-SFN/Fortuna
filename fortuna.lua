@@ -1,5 +1,8 @@
 math.randomseed(os.time())
 
+-- Criar a classe game que deve conter board, Players e pot como características
+-- Criar a classe pot e métodos check, bet, raise para Player
+
 --implementando orientação a objetos em Lua
 Board = { coins = { nil, nil, nil, nil, nil } }
 
@@ -52,7 +55,7 @@ function Player:showHand()
 end
 
 mesa = Board:new()
-for i = 1, 4 do
+for _ = 1, 4 do
 	mesa:flipCoin()
 	mesa:show()
 end
@@ -63,15 +66,18 @@ Number_Players = 0
 print("Bem-vindos a Fortuna!\n")
 
 while true do
-	io.write("Qual o nome do jogador que deseja jogar?\n")
+	io.write("\nQual o nome do jogador que deseja jogar?\n")
 	local alias = io.read()
 	if alias == "" then
 		break
 	end
 	Number_Players = Number_Players + 1
 
-	io.write("\rQual a mão de " .. alias .. "?\n")
+	io.write("Qual a mão de " .. alias .. "?\n")
 	local hand = io.read()
+	io.write("\27[1A") -- Move o cursor uma linha para cima (para a linha da pergunta)
+	io.write("\27[2K") -- Apaga a linha inteira
+
 	local coins_table = {}
 
 	for num_str in string.gmatch(hand, "%S+") do -- %S+ significa "um ou mais caracteres não-espaço"
@@ -92,7 +98,7 @@ while true do
 	end
 
 	Players[Number_Players] = Player:new({ name = alias, coins = coins_table })
-	Players[Number_Players]:showHand()
+	--Players[Number_Players]:showHand()
 end
 
 -- criar uma tabela de estados: pré-flop, flop, river, etc
