@@ -4,3 +4,4 @@ class Player:
         self.name = name
         self.money = start_money
         self.hand = None
+        self.money_altered = False
