@@ -1,9 +1,13 @@
+from bot import Bot
 from player import Player
-
+import tkinter as tk
+import math
+from table import Table
 
 class Game:
     time_max_per_round = 60
     number_of_players = 0
+    number_of_bots = 0
     start_money = 1000
     debug_mode = True
     players = []
@@ -19,7 +23,7 @@ class Game:
             print("#---------------------------------#")
             option = input()
             Game.actions_main_menu.get(option, lambda: print("Invalid command, try again!"),)()
-
+            if option == "4": return
 
     @staticmethod
     def show_settings():
@@ -30,18 +34,29 @@ class Game:
             print("There are no players, please add them!")
         else:
             print(f"3 - Players: {', '.join(player.name for player in Game.players)}")
+        print(f"4 - Number of bots: {Game.number_of_bots}")
         print("#-----------------------------------------#")
         print("If you want to change anything, just type the respective number of the option. (To get back, just type anything else)")
         option = input()
         Game.actions_setting_menu.get(option, lambda: print(""))()
 
 
+
     @staticmethod
     def start_game():
+        if not Game.players:
+            print("There are no players, please add them!")
+            return
+        nomes_dos_jogadores = []
         for player in Game.players:
+            nomes_dos_jogadores.append(player.name)
             if not player.money_altered:
                 player.money = Game.start_money
         print("Starting game...")
+        root = tk.Tk()
+        app = Table(master=root, jogadores=nomes_dos_jogadores)
+
+        app.mainloop()
 
     @staticmethod
     def settings():
@@ -97,6 +112,15 @@ class Game:
         else:
             print("Invalid option")
 
+    @staticmethod
+    def change_number_of_bots():
+        print("How many bots do you would like?")
+        Game.number_of_bots = int(input())
+        Game.number_of_players += Game.number_of_bots
+        for i in range(Game.number_of_bots):
+            bot = Bot(Game.start_money)
+            Game.players.append(bot)
+
 
     actions_main_menu = {
         '1': start_game,
@@ -108,5 +132,6 @@ class Game:
     actions_setting_menu = {
         '1': set_time_max_per_round,
         '2': set_start_money,
-        '3': change_player_status
+        '3': change_player_status,
+        '4': change_number_of_bots
     }
